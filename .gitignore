@@ -1,0 +1,22 @@
+# Raw camera media stays local. The site ships optimised copies in img/,
+# so committing the originals would push ~130MB for a 5MB site.
+# Anchored with a leading slash so img/*.jpg is NOT ignored.
+# NOTE: git sets core.ignorecase on macOS, so these match case-insensitively.
+# Do not add a *.png rule here, it would swallow the favicons.
+/*.jpg
+/*.jpeg
+/*.heic
+/*.mov
+
+# Earlier drafts of the page, superseded by index.html
+/CB Portfols.html
+/coby-baker-portfolio (1).html
+/scroll-reveal-portfolio.html
+/SR part 2.html
+/index.backup.html
+
+# Local tooling and OS cruft
+/_*.html
+.claude/
+.vercel/
+.DS_Store

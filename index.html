@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Coby Baker, Mechanical Engineering Portfolio</title>
+<meta name="description" content="Coby Baker, mechanical engineering student at Monash University. Chassis and mobility for Monash Nova Rover, a scratch built EDF jet, cold pressed plate armour, and a potato cannon.">
+<meta property="og:title" content="Coby Baker, Mechanical Engineering Portfolio">
+<meta property="og:description" content="Chassis and mobility for Monash Nova Rover. CAD, cold forming, and competition robotics.">
+<meta property="og:image" content="img/hero-field.jpg">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="icon" href="favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#101218">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Instrument+Sans:wght@400;500;600&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
+<style>
+
+  :root{
+    /* Palette pulled from the work itself: the rover's anodised magenta,
+       golden hour field light, CAD grey, drafting paper. */
+    --paper:#F4F4F1;
+    --paper-2:#EAEAE4;
+    --ink:#101218;
+    --ink-2:#191C24;
+    --magenta:#E4007C;      /* on paper */
+    --magenta-lt:#FF4FA3;   /* on ink, keeps small type legible */
+    --amber:#E9A13B;
+    --steel:#5A6169;
+    --hair:#C9C9C1;
+    --blueline:rgba(168,190,212,.20);
+
+    --display:'Archivo', sans-serif;
+    --body:'Instrument Sans', sans-serif;
+    --mono:'Azeret Mono', ui-monospace, monospace;
+
+    --ease:cubic-bezier(.22,.61,.36,1);
+    --pad:clamp(20px,5vw,64px);
+    --max:1280px;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  /* keep the sheet header clear of the fixed nav when arriving by anchor */
+  .sheet, .hero, .footer{ scroll-margin-top:64px; }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-size:clamp(1rem,.97rem + .18vw,1.08rem);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  h1,h2,h3,p,dl,dd,figure{ margin:0; }
+  ::selection{ background:var(--magenta); color:#fff; }
+  :focus-visible{ outline:2px solid var(--magenta); outline-offset:3px; }
+
+  .skip-link{
+    position:absolute; left:-9999px; top:0; z-index:300;
+    background:var(--magenta); color:#fff;
+    padding:12px 18px; font-family:var(--mono); font-size:.8rem;
+  }
+  .skip-link:focus{ left:12px; top:12px; }
+
+  /* ---------- shared type devices ---------- */
+  .eyebrow{
+    font-family:var(--mono); font-weight:500;
+    letter-spacing:.16em; text-transform:uppercase;
+    font-size:.7rem; color:var(--magenta); display:inline-block;
+  }
+  .display{
+    font-family:var(--display); text-transform:uppercase;
+    font-variation-settings:'wdth' 116,'wght' 800;
+    line-height:.94; letter-spacing:-.005em;
+  }
+
+  /* ---------- nav ---------- */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px var(--pad);
+    font-family:var(--mono);
+    color:var(--paper);
+    border-bottom:1px solid transparent;
+    transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease);
+  }
+  .nav.is-scrolled{
+    background:rgba(244,244,241,.92); backdrop-filter:blur(10px);
+    color:var(--ink); border-bottom-color:var(--hair);
+  }
+  .nav__brand{
+    font-family:var(--display); font-variation-settings:'wdth' 120,'wght' 800;
+    font-size:1.15rem; letter-spacing:.02em; line-height:1;
+    padding-bottom:4px; border-bottom:2px solid var(--magenta);
+  }
+  .nav__links{
+    display:flex; gap:clamp(16px,2.6vw,34px); list-style:none; margin:0; padding:0;
+    font-size:.72rem; letter-spacing:.12em; text-transform:uppercase;
+  }
+  .nav__links a{ position:relative; padding:4px 0; opacity:.72; transition:opacity .2s; }
+  .nav__links a::after{
+    content:''; position:absolute; left:0; bottom:0; height:1px; width:0;
+    background:var(--magenta); transition:width .3s var(--ease);
+  }
+  .nav__links a:hover, .nav__links a:focus-visible{ opacity:1; }
+  .nav__links a:hover::after{ width:100%; }
+
+  .nav__toggle{
+    display:none; flex-direction:column; gap:5px; background:none; border:0;
+    padding:6px; cursor:pointer;
+  }
+  .nav__toggle span{ width:22px; height:2px; background:currentColor; display:block; transition:transform .25s var(--ease), opacity .2s; }
+
+  @media (max-width:820px){
+    .nav__links{
+      position:fixed; inset:0; z-index:99;
+      flex-direction:column; justify-content:center; align-items:flex-start;
+      background:var(--ink); color:var(--paper); padding:0 32px; gap:22px;
+      font-size:1.5rem; letter-spacing:.06em;
+      transform:translateX(100%); transition:transform .35s var(--ease);
+    }
+    .nav__links.is-open{ transform:translateX(0); }
+    .nav__links a{ opacity:1; }
+    .nav__toggle{ display:flex; position:relative; z-index:101; }
+    .nav__toggle.is-open span{ background:var(--paper); }
+    .nav__toggle.is-open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+    .nav__toggle.is-open span:nth-child(2){ opacity:0; }
+    .nav__toggle.is-open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+  }
+
+  /* ---------- hero: the field, full bleed ---------- */
+  .hero{
+    position:relative; min-height:100svh; display:flex; align-items:flex-end;
+    overflow:hidden; background:var(--ink); color:var(--paper);
+  }
+  .hero__bg{
+    position:absolute; inset:0;
+    background:url('img/hero-field.jpg') center/cover no-repeat;
+  }
+  .hero__scrim{
+    position:absolute; inset:0;
+    background:
+      linear-gradient(to bottom, rgba(16,18,24,.72) 0%, rgba(16,18,24,.30) 14%, rgba(16,18,24,.12) 34%, rgba(16,18,24,.80) 74%, var(--ink) 100%);
+  }
+  .hero__content{
+    position:relative; z-index:1; width:100%; max-width:var(--max); margin:0 auto;
+    padding:0 var(--pad) clamp(48px,8vh,96px);
+  }
+  .hero__content > *{ opacity:0; transform:translateY(14px); animation:rise .8s var(--ease) forwards; }
+  .hero__eyebrow{ animation-delay:.15s; }
+  .hero__name{ animation-delay:.28s; }
+  .hero__rule{ animation-delay:.44s; }
+  .hero__role{ animation-delay:.56s; }
+  .hero__cue{ animation-delay:.7s; }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+
+  .hero__eyebrow{
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--paper);
+    /* the photo runs bright behind this line, so hold the small type off it */
+    text-shadow:0 1px 14px rgba(16,18,24,.95), 0 0 3px rgba(16,18,24,.7);
+  }
+  .hero__eyebrow b{ color:var(--magenta-lt); font-weight:500; }
+  .hero__name{
+    font-size:clamp(3.2rem,13vw,9rem); margin:14px 0 0;
+  }
+  .hero__rule{ width:min(340px,60%); height:2px; background:var(--magenta); margin:26px 0 22px; }
+  .hero__role{ max-width:48ch; font-size:clamp(1rem,1.6vw,1.14rem); color:rgba(244,244,241,.82); }
+  .hero__cue{
+    margin-top:38px; display:inline-flex; align-items:center; gap:12px;
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.14em;
+    text-transform:uppercase; color:rgba(244,244,241,.72);
+  }
+  .hero__cue-line{ width:1px; height:30px; background:rgba(244,244,241,.35); position:relative; overflow:hidden; }
+  .hero__cue-line::after{
+    content:''; position:absolute; top:-100%; left:0; width:100%; height:100%;
+    background:var(--magenta); animation:cue 1.9s var(--ease) infinite;
+  }
+  @keyframes cue{ to{ top:100%; } }
+
+  /* ---------- the register: hard cut from field to paper ---------- */
+  .register{
+    background:var(--paper); border-bottom:1px solid var(--hair);
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase;
+  }
+  .register__inner{
+    max-width:var(--max); margin:0 auto; padding:16px var(--pad);
+    display:flex; flex-wrap:wrap; gap:10px 28px; align-items:center;
+    color:var(--steel);
+  }
+  .register__inner b{ color:var(--ink); font-weight:500; }
+  .register__tick{ width:6px; height:6px; background:var(--magenta); flex:none; }
+
+  /* ---------- sheets ---------- */
+  .sheet{
+    border-bottom:1px solid var(--hair);
+    background-image:
+      linear-gradient(var(--blueline) 1px, transparent 1px),
+      linear-gradient(90deg, var(--blueline) 1px, transparent 1px);
+    background-size:56px 56px;
+  }
+  /* scroll reveal only when JS is running, otherwise the sheets stay visible */
+  .js .sheet{
+    opacity:0; transform:translateY(26px);
+    transition:opacity .7s var(--ease), transform .7s var(--ease);
+  }
+  .js .sheet.is-visible{ opacity:1; transform:none; }
+
+  .sheet__inner{
+    max-width:var(--max); margin:0 auto;
+    padding:clamp(52px,8vh,96px) var(--pad) clamp(36px,5vh,56px);
+  }
+  .sheet__head{
+    display:flex; align-items:baseline; gap:20px; flex-wrap:wrap;
+    padding-bottom:12px; border-bottom:1px solid var(--hair); margin-bottom:clamp(28px,4vh,44px);
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  }
+  .sheet__no{ color:var(--magenta); font-weight:500; }
+  .sheet__class{ color:var(--steel); margin-left:auto; }
+
+  .sheet__grid{
+    display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
+    gap:clamp(28px,4.5vw,64px); align-items:start;
+  }
+  .sheet--flip .sheet__body{ order:2; }
+  .sheet--flip .sheet__plate{ order:1; }
+  /* the plate keeps the wider column whichever side it sits on */
+  .sheet--flip .sheet__grid{ grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); }
+
+  .sheet__body h2{
+    font-family:var(--display); text-transform:uppercase;
+    font-variation-settings:'wdth' 112,'wght' 800;
+    font-size:clamp(1.9rem,3.6vw,3rem); line-height:1.0; letter-spacing:-.01em;
+    margin-bottom:18px;
+  }
+  .sheet__body p{ color:var(--steel); max-width:46ch; }
+  .sheet__note{
+    margin-top:24px; padding-left:14px; border-left:2px solid var(--amber);
+    font-family:var(--mono); font-size:.74rem; line-height:1.7; color:var(--steel);
+  }
+
+  /* ---------- plates: how each kind of evidence is shown ---------- */
+  .plate{ position:relative; }
+  .plate__label{
+    font-family:var(--mono); font-size:.64rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--steel); margin-top:8px; display:block;
+  }
+  .plate-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
+
+  /* CAD renders are alpha cutouts, so they sit on the paper directly.
+     A blend mode would break during the sheet reveal, because the reveal's
+     opacity/transform creates a stacking context that suspends blending. */
+  .cad{ width:100%; }
+
+  .photo{ background:var(--ink-2); overflow:hidden; position:relative; }
+  .photo img{ width:100%; height:100%; object-fit:cover; }
+  .photo--wide{ aspect-ratio:16/9; }
+  .photo--std{ aspect-ratio:4/3; }
+  /* portrait sources, so bias the crop onto the subject */
+  .photo--detail img{ object-position:64% 42%; }
+  .photo--range img{ object-position:50% 70%; }
+
+  /* ---------- three view drawing (jet) ---------- */
+  .threeview__plan{ display:flex; gap:14px; align-items:stretch; }
+  .threeview__plan .cad{ flex:1; min-width:0; align-self:center; }
+  .threeview__row{
+    display:grid; grid-template-columns:1fr 1fr; gap:14px;
+    margin-top:10px; padding-top:18px; border-top:1px solid var(--hair);
+  }
+  /* equal view windows so the two auxiliary views share a baseline */
+  .threeview__row .plate{ display:flex; flex-direction:column; }
+  .threeview__row .cad{
+    width:100%; height:clamp(110px,12vw,170px);
+    object-fit:contain; object-position:center;
+  }
+
+  /* the dimension line, the one place this page shows off */
+  .dim{ position:relative; width:54px; flex:none; }
+  .dim__ext{ position:absolute; left:10px; right:0; height:1px; background:var(--hair); }
+  /* insets measured off the render: wingtips sit at 1.7% and 98.1% of image height */
+  .dim__ext--top{ top:1.7%; }
+  .dim__ext--bottom{ bottom:1.9%; }
+  .dim__line{
+    position:absolute; left:38px; top:1.7%; bottom:1.9%; width:1px; background:var(--magenta);
+    transform-origin:top;
+  }
+  .dim__line::before, .dim__line::after{
+    content:''; position:absolute; left:-3.5px; width:0; height:0;
+    border-left:4px solid transparent; border-right:4px solid transparent;
+  }
+  .dim__line::before{ top:0; border-bottom:9px solid var(--magenta); }
+  .dim__line::after{ bottom:0; border-top:9px solid var(--magenta); }
+  .dim__label{
+    position:absolute; left:38px; top:50%;
+    transform:translate(-50%,-50%) rotate(-90deg);
+    background:var(--paper); padding:5px 8px;
+    font-family:var(--mono); font-size:.72rem; font-weight:500; letter-spacing:.06em;
+    color:var(--magenta); white-space:nowrap;
+  }
+  .dim__label i{ font-style:normal; color:var(--steel); font-size:.62rem; }
+
+  /* with JS the dimension draws itself as the sheet enters */
+  .js .dim__line{ transform:scaleY(0); transition:transform .95s var(--ease); }
+  .js .dim__line::before,
+  .js .dim__line::after{ opacity:0; transition:opacity .3s var(--ease) .8s; }
+  .js .dim__label{ opacity:0; transition:opacity .4s var(--ease) .75s; }
+  .js .is-visible .dim__line{ transform:scaleY(1); }
+  .js .is-visible .dim__line::before,
+  .js .is-visible .dim__line::after,
+  .js .is-visible .dim__label{ opacity:1; }
+
+  /* ---------- gallery ---------- */
+  .gallery{
+    position:relative; aspect-ratio:3/2; background:var(--paper);
+    border:1px solid var(--hair); overflow:hidden;
+  }
+  .gallery__track{ position:relative; width:100%; height:100%; }
+  .gallery__slide{
+    position:absolute; inset:0; margin:0; opacity:0;
+    transition:opacity .6s var(--ease); pointer-events:none;
+  }
+  .gallery__slide.is-active{ opacity:1; pointer-events:auto; }
+  .gallery__slide img{ width:100%; height:100%; object-fit:cover; }
+  .gallery__slide--cad{ display:flex; align-items:center; justify-content:center; padding:22px; background:var(--paper); }
+  .gallery__slide--cad img{ height:auto; object-fit:contain; }
+  .gallery__caption{
+    position:absolute; left:0; bottom:0; z-index:2;
+    background:var(--ink); color:var(--paper);
+    font-family:var(--mono); font-size:.64rem; letter-spacing:.12em; text-transform:uppercase;
+    padding:7px 12px;
+  }
+  .gallery__slide--cad .gallery__caption{ background:var(--magenta); }
+  .gallery__arrow{
+    position:absolute; top:50%; transform:translateY(-50%); z-index:3;
+    width:42px; height:42px; border:1px solid var(--ink);
+    background:rgba(244,244,241,.9); color:var(--ink);
+    font-size:1.2rem; line-height:1; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .2s, color .2s, border-color .2s;
+  }
+  .gallery__arrow:hover{ background:var(--magenta); color:#fff; border-color:var(--magenta); }
+  .gallery__arrow--prev{ left:14px; }
+  .gallery__arrow--next{ right:14px; }
+  .gallery__dots{
+    position:absolute; right:14px; bottom:14px; z-index:3; display:flex; gap:8px;
+  }
+  .gallery__dot{
+    width:22px; height:3px; border:0; padding:0; cursor:pointer;
+    background:rgba(16,18,24,.28); transition:background .2s;
+  }
+  .gallery__dot.is-active{ background:var(--magenta); }
+
+  /* ---------- title block: where an engineer looks for the numbers ---------- */
+  .titleblock{
+    margin-top:clamp(32px,5vh,52px);
+    border:1px solid var(--ink); border-left:3px solid var(--magenta);
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    background:var(--paper);
+  }
+  .titleblock__cell{
+    padding:12px 16px; border-right:1px solid var(--hair); min-width:0;
+  }
+  .titleblock__cell:last-child{ border-right:0; }
+  .titleblock dt{
+    font-family:var(--mono); font-size:.6rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--steel); margin-bottom:5px;
+  }
+  .titleblock dd{
+    font-family:var(--mono); font-size:.84rem; font-weight:500; color:var(--ink);
+    line-height:1.35; word-break:break-word;
+  }
+  .titleblock__cell--mark dd{ color:var(--magenta); }
+
+  /* ---------- footer ---------- */
+  .footer{ background:var(--ink); color:var(--paper); padding:clamp(64px,10vh,120px) var(--pad) 36px; }
+  .footer__inner{ max-width:var(--max); margin:0 auto; }
+  .footer .eyebrow{ color:var(--magenta-lt); }
+  .footer h2{
+    font-family:var(--display); text-transform:uppercase;
+    font-variation-settings:'wdth' 110,'wght' 800;
+    font-size:clamp(2rem,5.4vw,4.2rem); line-height:.98; max-width:16ch; margin:14px 0 40px;
+  }
+  .footer__contact{ display:flex; flex-wrap:wrap; gap:14px 44px; font-family:var(--mono); font-size:.88rem; }
+  .footer__contact a{ border-bottom:1px solid var(--magenta); padding-bottom:3px; transition:color .2s; }
+  .footer__contact a:hover{ color:var(--magenta); }
+  .footer__contact span{ color:rgba(244,244,241,.6); }
+  .footer__bottom{
+    margin-top:60px; padding-top:22px; border-top:1px solid rgba(244,244,241,.16);
+    font-family:var(--mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase;
+    color:rgba(244,244,241,.5);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    .sheet__grid,
+    .sheet--flip .sheet__grid{ grid-template-columns:1fr; }
+    .sheet--flip .sheet__body{ order:0; }
+    .sheet--flip .sheet__plate{ order:0; }
+    .sheet__class{ margin-left:0; }
+  }
+  @media (max-width:560px){
+    .threeview__row{ grid-template-columns:1fr; }
+    .dim{ width:42px; }
+    .dim__line, .dim__label{ left:28px; }
+    .gallery{ aspect-ratio:4/3; }
+    .gallery__arrow{ width:34px; height:34px; font-size:1rem; }
+    /* dots move to the top so they stop colliding with the caption */
+    .gallery__dots{ top:12px; bottom:auto; }
+    .gallery__caption{ right:0; }
+    /* a single column reads as a spec list instead of a ragged half empty grid */
+    .titleblock{ grid-template-columns:1fr; }
+    .titleblock__cell{ border-right:0; border-bottom:1px solid var(--hair); }
+    .titleblock__cell:last-child{ border-bottom:0; }
+    .sheet__body h2{ font-size:1.7rem; }
+    .sheet__inner{ padding-top:clamp(40px,6vh,64px); }
+  }
+
+  /* ---------- reduced motion ---------- */
+  @media (prefers-reduced-motion:reduce){
+    html{ scroll-behavior:auto; }
+    .hero__content > *{ animation:none; opacity:1; transform:none; }
+    .hero__cue-line::after{ animation:none; top:0; }
+    .js .sheet{ transition:none; opacity:1; transform:none; }
+    .js .dim__line{ transition:none; transform:scaleY(1); }
+    .js .dim__line::before,
+    .js .dim__line::after,
+    .js .dim__label{ transition:none; opacity:1; }
+    .gallery__slide{ transition:none; }
+  }
+
+</style>
+</head>
+<body>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#top">CB</a>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="#rover">Rover</a></li>
+      <li><a href="#jet">Jet</a></li>
+      <li><a href="#armour">Armour</a></li>
+      <li><a href="#cannon">Cannon</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__scrim" aria-hidden="true"></div>
+    <div class="hero__content">
+      <span class="hero__eyebrow">Mechanical engineering, Monash University <b>/ 2nd year</b></span>
+      <h1 class="hero__name display">Coby<br>Baker</h1>
+      <div class="hero__rule" aria-hidden="true"></div>
+      <p class="hero__role">Second year mechanical engineering student at Monash. I'm on the chassis subteam for Monash Nova Rover, and I build my own projects in between.</p>
+      <a class="hero__cue" href="#rover"><span class="hero__cue-line" aria-hidden="true"></span>Four sheets</a>
+    </div>
+  </section>
+
+  <div class="register" aria-label="Credentials">
+    <div class="register__inner">
+      <span><b>2nd / 38</b> University Rover Challenge 2026</span>
+      <span class="register__tick" aria-hidden="true"></span>
+      <span><b>Best Engineering Design</b> Australian Rover Challenge</span>
+      <span class="register__tick" aria-hidden="true"></span>
+      <span>Chassis subteam, <b>Monash Nova Rover</b></span>
+    </div>
+  </div>
+
+  <main id="main">
+
+    <!-- SHEET 01, Nova Rover -->
+    <section class="sheet" id="rover">
+      <div class="sheet__inner">
+        <header class="sheet__head">
+          <span class="sheet__no">Sheet 01 / 04</span>
+          <span class="sheet__class">Planetary robotics</span>
+        </header>
+
+        <div class="sheet__grid">
+          <div class="sheet__body">
+            <h2>Nova Rover chassis and mobility</h2>
+            <p>I'm a mechanical member on the chassis subteam, working on the structure and mobility systems for Monash Nova Rover's Mars and lunar rover. The job covers CAD, fabrication and testing, and the rover gets judged on whether it can actually drive across broken ground.</p>
+            <p class="sheet__note">I was also on the field crew at the Australian Rover Challenge, doing pit repairs and drive testing between runs.</p>
+          </div>
+
+          <div class="sheet__plate">
+            <div class="gallery" data-gallery role="region" aria-roledescription="carousel" aria-label="Nova Rover photographs">
+              <div class="gallery__track">
+                <figure class="gallery__slide gallery__slide--cad is-active">
+                  <img src="img/chassis-cad.webp" alt="Onshape render of the rover chassis frame with suspension links attached" loading="lazy">
+                  <figcaption class="gallery__caption">Chassis assembly, Onshape</figcaption>
+                </figure>
+                <figure class="gallery__slide">
+                  <img src="img/rover-close.jpg" alt="The rover on the test track, magenta chassis and suspension in close view" loading="lazy">
+                  <figcaption class="gallery__caption">Drive test</figcaption>
+                </figure>
+                <figure class="gallery__slide">
+                  <img src="img/rover-arc.jpg" alt="Two team members working on the rover under the competition tent" loading="lazy">
+                  <figcaption class="gallery__caption">Pit crew, Australian Rover Challenge</figcaption>
+                </figure>
+                <figure class="gallery__slide">
+                  <img src="img/rover-pit.jpg" alt="Team gathered around the rover during a service window at the competition" loading="lazy">
+                  <figcaption class="gallery__caption">Service window</figcaption>
+                </figure>
+                <figure class="gallery__slide">
+                  <img src="img/rover-team.jpg" alt="Nova Rover team walking the rover out to the competition course at golden hour" loading="lazy">
+                  <figcaption class="gallery__caption">Walk in to the course</figcaption>
+                </figure>
+              </div>
+              <button class="gallery__arrow gallery__arrow--prev" type="button" aria-label="Previous photograph">&#8249;</button>
+              <button class="gallery__arrow gallery__arrow--next" type="button" aria-label="Next photograph">&#8250;</button>
+              <div class="gallery__dots"></div>
+            </div>
+          </div>
+        </div>
+
+        <dl class="titleblock">
+          <div class="titleblock__cell"><dt>Role</dt><dd>Chassis subteam</dd></div>
+          <div class="titleblock__cell titleblock__cell--mark"><dt>Result</dt><dd>2nd / 38, URC 2026</dd></div>
+          <div class="titleblock__cell"><dt>Field crew</dt><dd>Australian Rover Challenge</dd></div>
+          <div class="titleblock__cell"><dt>Award</dt><dd>Best Engineering Design</dd></div>
+          <div class="titleblock__cell"><dt>Drawn by</dt><dd>C. Baker</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- SHEET 02, EDF jet, presented as a three view -->
+    <section class="sheet sheet--flip" id="jet">
+      <div class="sheet__inner">
+        <header class="sheet__head">
+          <span class="sheet__no">Sheet 02 / 04</span>
+          <span class="sheet__class">Aerospace / third angle projection</span>
+        </header>
+
+        <div class="sheet__grid">
+          <div class="sheet__body">
+            <h2>64mm EDF jet</h2>
+            <p>A scratch built RC jet, modelled from the airfoil up in Onshape. It uses a NACA 64-012A section with a T-tail, a 900mm wingspan, and bellcrank actuated control surfaces on a 4mm carbon spar.</p>
+            <p class="sheet__note">Mid fabrication. The airframe shell is prototyped and the control linkages are next.</p>
+          </div>
+
+          <div class="sheet__plate">
+            <div class="threeview">
+              <div class="threeview__plan">
+                <img class="cad" src="img/jet-top.webp" alt="Plan view of the EDF jet showing the full 900mm wingspan and aileron placement" loading="lazy">
+                <div class="dim" aria-hidden="true">
+                  <span class="dim__ext dim__ext--top"></span>
+                  <span class="dim__ext dim__ext--bottom"></span>
+                  <span class="dim__line"></span>
+                  <span class="dim__label">900<i> mm</i></span>
+                </div>
+              </div>
+              <span class="plate__label">View A / plan</span>
+
+              <div class="threeview__row">
+                <div class="plate">
+                  <img class="cad" src="img/jet-side.webp" alt="Profile view of the EDF jet showing the T-tail and fuselage line" loading="lazy">
+                  <span class="plate__label">View B / profile</span>
+                </div>
+                <div class="plate">
+                  <img class="cad" src="img/jet-iso.webp" alt="Isometric render of the EDF jet airframe" loading="lazy">
+                  <span class="plate__label">View C / isometric</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dl class="titleblock">
+          <div class="titleblock__cell titleblock__cell--mark"><dt>Span</dt><dd>900 mm</dd></div>
+          <div class="titleblock__cell"><dt>Airfoil</dt><dd>NACA 64-012A</dd></div>
+          <div class="titleblock__cell"><dt>Tail</dt><dd>T-configuration</dd></div>
+          <div class="titleblock__cell"><dt>Spar</dt><dd>4 mm carbon</dd></div>
+          <div class="titleblock__cell"><dt>Status</dt><dd>Mid fabrication</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- SHEET 03, plate armour -->
+    <section class="sheet" id="armour">
+      <div class="sheet__inner">
+        <header class="sheet__head">
+          <span class="sheet__no">Sheet 03 / 04</span>
+          <span class="sheet__class">Sheet metal forming</span>
+        </header>
+
+        <div class="sheet__grid">
+          <div class="sheet__body">
+            <h2>Cold pressed plate armour</h2>
+            <p>Hand formed gauntlets, cold pressed from 1mm mild steel between 3D printed PLA molds I designed for the job. Getting the curvature right meant working out the springback compensation first, then pressing, measuring, and adjusting the mold before pressing again.</p>
+            <p class="sheet__note">Made in a backyard workshop with clamps and printed molds. No press brake, no hydraulic forming.</p>
+          </div>
+
+          <div class="sheet__plate">
+            <div class="plate photo photo--std">
+              <img src="img/armour-arm.jpg" alt="Finished mild steel gauntlet and vambrace worn on the forearm" loading="lazy">
+            </div>
+            <span class="plate__label">Assembled gauntlet and vambrace</span>
+
+            <div class="plate-row">
+              <div class="plate">
+                <div class="photo photo--std">
+                  <img src="img/armour-process.jpg" alt="Steel lames cut and pinned onto a leather glove on the workbench, with paper templates alongside" loading="lazy">
+                </div>
+                <span class="plate__label">Lames pinned for fitting</span>
+              </div>
+              <div class="plate">
+                <div class="photo photo--std photo--detail">
+                  <img src="img/armour-detail.jpg" alt="Close detail of the articulated finger lames on the gauntlet" loading="lazy">
+                </div>
+                <span class="plate__label">Finger lames</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <dl class="titleblock">
+          <div class="titleblock__cell titleblock__cell--mark"><dt>Material</dt><dd>1 mm mild steel</dd></div>
+          <div class="titleblock__cell"><dt>Tooling</dt><dd>3D printed PLA molds</dd></div>
+          <div class="titleblock__cell"><dt>Process</dt><dd>Cold press forming</dd></div>
+          <div class="titleblock__cell"><dt>Variable</dt><dd>Springback compensation</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- SHEET 04, potato cannon -->
+    <section class="sheet sheet--flip" id="cannon">
+      <div class="sheet__inner">
+        <header class="sheet__head">
+          <span class="sheet__no">Sheet 04 / 04</span>
+          <span class="sheet__class">Workshop build</span>
+        </header>
+
+        <div class="sheet__grid">
+          <div class="sheet__body">
+            <h2>Potato cannon</h2>
+            <p>A potato cannon I built and shoot on the property at home. PVC barrel with a grip and trigger assembly mounted underneath, fired across open paddock with a clear line of sight.</p>
+            <p class="sheet__note">Built from PVC pipe and fittings.</p>
+          </div>
+
+          <div class="sheet__plate">
+            <div class="plate photo photo--wide">
+              <img src="img/cannon-shed.jpg" alt="Coby holding the full length of the PVC potato cannon in the shed" loading="lazy">
+            </div>
+            <span class="plate__label">Barrel and grip assembly</span>
+
+            <div class="plate" style="margin-top:16px">
+              <div class="photo photo--std photo--range">
+                <img src="img/cannon-range.jpg" alt="The cannon aimed out across an open paddock towards hills" loading="lazy">
+              </div>
+              <span class="plate__label">Firing line, open paddock</span>
+            </div>
+          </div>
+        </div>
+
+        <dl class="titleblock">
+          <div class="titleblock__cell titleblock__cell--mark"><dt>Barrel</dt><dd>PVC</dd></div>
+          <div class="titleblock__cell"><dt>Build</dt><dd>Scratch built</dd></div>
+          <div class="titleblock__cell"><dt>Firing</dt><dd>Open paddock</dd></div>
+          <div class="titleblock__cell"><dt>Status</dt><dd>Working</dd></div>
+        </dl>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" id="contact">
+    <div class="footer__inner">
+      <span class="eyebrow">Get in touch</span>
+      <h2>Open to internships, placements, and anything that involves a workshop.</h2>
+      <div class="footer__contact">
+        <a href="mailto:Cobywork180@outlook.com">Cobywork180@outlook.com</a>
+        <a href="tel:+61490045932">0490 045 932</a>
+        <span>Melbourne, Australia</span>
+      </div>
+      <div class="footer__bottom">
+        <span>Coby Baker</span>
+        <span>Mechanical engineering, Monash University</span>
+      </div>
+    </div>
+  </footer>
+
+<script>
+(function(){
+  var nav = document.getElementById('nav');
+  var toggle = document.getElementById('navToggle');
+  var links = document.getElementById('navLinks');
+
+  toggle.addEventListener('click', function(){
+    var open = links.classList.toggle('is-open');
+    toggle.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  links.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      links.classList.remove('is-open');
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  window.addEventListener('scroll', function(){
+    nav.classList.toggle('is-scrolled', window.scrollY > 40);
+  }, { passive:true });
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sheets = document.querySelectorAll('.sheet');
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    sheets.forEach(function(el){ el.classList.add('is-visible'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.18 });
+    sheets.forEach(function(el){ io.observe(el); });
+  }
+
+  document.querySelectorAll('[data-gallery]').forEach(function(gallery){
+    var slides = gallery.querySelectorAll('.gallery__slide');
+    if (slides.length < 2) return;
+
+    var dotsWrap = gallery.querySelector('.gallery__dots');
+    var prevBtn  = gallery.querySelector('.gallery__arrow--prev');
+    var nextBtn  = gallery.querySelector('.gallery__arrow--next');
+    var DWELL    = 5200;
+
+    var index = 0, timer = null, hovering = false, focused = false;
+
+    slides.forEach(function(slide, i){
+      slide.setAttribute('aria-hidden', i === 0 ? 'false' : 'true');
+      var dot = document.createElement('button');
+      dot.className = 'gallery__dot' + (i === 0 ? ' is-active' : '');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', 'Go to photograph ' + (i + 1) + ' of ' + slides.length);
+      dot.addEventListener('click', function(){ goTo(i); restart(); });
+      dotsWrap.appendChild(dot);
+    });
+    var dots = gallery.querySelectorAll('.gallery__dot');
+
+    function goTo(i){
+      slides[index].classList.remove('is-active');
+      slides[index].setAttribute('aria-hidden', 'true');
+      dots[index].classList.remove('is-active');
+      index = (i + slides.length) % slides.length;
+      slides[index].classList.add('is-active');
+      slides[index].setAttribute('aria-hidden', 'false');
+      dots[index].classList.add('is-active');
+    }
+
+    // One place decides whether the timer should exist. Calling start() from
+    // several handlers used to stack intervals, which made it advance erratically.
+    function shouldRun(){
+      return !reduceMotion && !hovering && !focused && !document.hidden;
+    }
+    function sync(){
+      if (shouldRun()) {
+        if (!timer) timer = setInterval(function(){ goTo(index + 1); }, DWELL);
+      } else if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+    // after a manual move, give the new slide a full dwell
+    function restart(){
+      if (timer) { clearInterval(timer); timer = null; }
+      sync();
+    }
+
+    prevBtn.addEventListener('click', function(){ goTo(index - 1); restart(); });
+    nextBtn.addEventListener('click', function(){ goTo(index + 1); restart(); });
+    gallery.addEventListener('mouseenter', function(){ hovering = true;  sync(); });
+    gallery.addEventListener('mouseleave', function(){ hovering = false; sync(); });
+    gallery.addEventListener('focusin',    function(){ focused  = true;  sync(); });
+    gallery.addEventListener('focusout',   function(){ focused  = false; sync(); });
+    document.addEventListener('visibilitychange', sync);
+
+    sync();
+  });
+})();
+</script>
+
+</body>
+</html>
